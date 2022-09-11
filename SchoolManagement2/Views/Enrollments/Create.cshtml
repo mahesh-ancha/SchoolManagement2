@@ -4,6 +4,33 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script>
+    $(function () {
+        function log(message) {
+            $("<div>").text(message).prependTo("#log");
+            $("#log").scrollTop(0);
+        }
+
+        $("#student_firstname").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "search.php",
+                    dataType: "jsonp",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                log("Selected: " + ui.item.value + " aka " + ui.item.id);
+            }
+        });
+    });
+</script>
 
 <h2>Create</h2>
 
@@ -24,9 +51,10 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.StudentId, "Student", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.StudentId, "StudentId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("StudentId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.EditorFor(model => model.student.firstname,new { htmlAttributes= new { @class = "form-control" } })
+                @Html.HiddenFor(model=>model.StudentId)
                 @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -36,6 +64,14 @@
             <div class="col-md-10">
                 @Html.DropDownList("CourceId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.CourceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lecturer_Id, "Lecturer_Id", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Lecturer_Id", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Lecturer_Id, "", new { @class = "text-danger" })
             </div>
         </div>
 

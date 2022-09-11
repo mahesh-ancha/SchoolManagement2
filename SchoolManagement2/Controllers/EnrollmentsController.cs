@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -15,20 +16,20 @@ namespace SchoolManagement2.Controllers
         private StudentEntities2 db = new StudentEntities2();
 
         // GET: Enrollments
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var enrollments = db.Enrollments.Include(e => e.Cource).Include(e => e.student);
-            return View(enrollments.ToList());
+            var enrollments = db.Enrollments.Include(e => e.Cource).Include(e => e.student).Include(e => e.Lecturer);
+            return View(await enrollments.ToListAsync());
         }
 
         // GET: Enrollments/Details/5
-        public ActionResult Details(int? id)
+        public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = await db.Enrollments.FindAsync(id);
             if (enrollment == null)
             {
                 return HttpNotFound();
@@ -41,6 +42,7 @@ namespace SchoolManagement2.Controllers
         {
             ViewBag.CourceId = new SelectList(db.Cources, "CourceId", "title");
             ViewBag.StudentId = new SelectList(db.students, "StudentId", "firstname");
+            ViewBag.Lecturer_Id = new SelectList(db.Lecturers, "Lecturer_Id", "firstname");
             return View();
         }
 
@@ -49,34 +51,36 @@ namespace SchoolManagement2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "EnrollmentId,Grade,StudentId,CourceId")] Enrollment enrollment)
+        public async Task<ActionResult> Create([Bind(Include = "EnrollmentId,Grade,StudentId,CourceId,Lecturer_Id")] Enrollment enrollment)
         {
             if (ModelState.IsValid)
             {
                 db.Enrollments.Add(enrollment);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
             ViewBag.CourceId = new SelectList(db.Cources, "CourceId", "title", enrollment.CourceId);
             ViewBag.StudentId = new SelectList(db.students, "StudentId", "firstname", enrollment.StudentId);
+            ViewBag.Lecturer_Id = new SelectList(db.Lecturers, "Lecturer_Id", "firstname", enrollment.Lecturer_Id);
             return View(enrollment);
         }
 
         // GET: Enrollments/Edit/5
-        public ActionResult Edit(int? id)
+        public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = await db.Enrollments.FindAsync(id);
             if (enrollment == null)
             {
                 return HttpNotFound();
             }
             ViewBag.CourceId = new SelectList(db.Cources, "CourceId", "title", enrollment.CourceId);
             ViewBag.StudentId = new SelectList(db.students, "StudentId", "firstname", enrollment.StudentId);
+            ViewBag.Lecturer_Id = new SelectList(db.Lecturers, "Lecturer_Id", "firstname", enrollment.Lecturer_Id);
             return View(enrollment);
         }
 
@@ -85,27 +89,28 @@ namespace SchoolManagement2.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "EnrollmentId,Grade,StudentId,CourceId")] Enrollment enrollment)
+        public async Task<ActionResult> Edit([Bind(Include = "EnrollmentId,Grade,StudentId,CourceId,Lecturer_Id")] Enrollment enrollment)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(enrollment).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             ViewBag.CourceId = new SelectList(db.Cources, "CourceId", "title", enrollment.CourceId);
             ViewBag.StudentId = new SelectList(db.students, "StudentId", "firstname", enrollment.StudentId);
+            ViewBag.Lecturer_Id = new SelectList(db.Lecturers, "Lecturer_Id", "firstname", enrollment.Lecturer_Id);
             return View(enrollment);
         }
 
         // GET: Enrollments/Delete/5
-        public ActionResult Delete(int? id)
+        public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = await db.Enrollments.FindAsync(id);
             if (enrollment == null)
             {
                 return HttpNotFound();
@@ -116,11 +121,11 @@ namespace SchoolManagement2.Controllers
         // POST: Enrollments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = await db.Enrollments.FindAsync(id);
             db.Enrollments.Remove(enrollment);
-            db.SaveChanges();
+            await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
