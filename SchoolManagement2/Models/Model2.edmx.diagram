@@ -10,6 +10,8 @@
         <EntityTypeShape EntityType="StudentModel1.student" Width="1.5" PointX="5.5" PointY="1.875" IsExpanded="true" />
         <AssociationConnector Association="StudentModel1.FK__Enrollmen__Courc__48CFD27E" ManuallyRouted="false" />
         <AssociationConnector Association="StudentModel1.FK__Enrollmen__Stude__3D5E1FD2" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="StudentModel1.Lecturer" Width="1.5" PointX="0.75" PointY="4.875" />
+        <AssociationConnector Association="StudentModel1.FK__Enrollmen__Lectu__5DCAEF64" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

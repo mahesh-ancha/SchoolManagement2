@@ -28,5 +28,6 @@ namespace SchoolManagement2.Models
         public virtual DbSet<Cource> Cources { get; set; }
         public virtual DbSet<Enrollment> Enrollments { get; set; }
         public virtual DbSet<student> students { get; set; }
+        public virtual DbSet<Lecturer> Lecturers { get; set; }
     }
 }
