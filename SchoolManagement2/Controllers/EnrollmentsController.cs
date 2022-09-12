@@ -128,6 +128,15 @@ namespace SchoolManagement2.Controllers
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        public JsonResult GetStudents(string term)
+        {
+            var students = db.students.Select(q => new
+            {
+                Name = q.firstname + " " + q.lastname,
+                id=q.StudentId
+            }).Where(q=> q.Name.Contains(term));
+            return Json(students,JsonRequestBehavior.AllowGet);
+        }
 
         protected override void Dispose(bool disposing)
         {

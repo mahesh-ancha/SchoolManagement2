@@ -6,27 +6,28 @@
 }
 <script>
     $(function () {
-        function log(message) {
-            $("<div>").text(message).prependTo("#log");
-            $("#log").scrollTop(0);
-        }
+       
 
         $("#student_firstname").autocomplete({
             source: function (request, response) {
                 $.ajax({
-                    url: "search.php",
+                    url: "/Enrollments/GetStudents",
                     dataType: "jsonp",
+                    type:"POST",
                     data: {
                         term: request.term
                     },
                     success: function (data) {
-                        response(data);
+                        console.log(data);
+                        response($.map(data, function (item) {
+                            return {label: item.name, value = item.name, id = item.id};
+                        }))
                     }
                 });
             },
             minLength: 2,
-            select: function (event, ui) {
-                log("Selected: " + ui.item.value + " aka " + ui.item.id);
+            select: function (event, query) {
+                console.log(query);
             }
         });
     });
